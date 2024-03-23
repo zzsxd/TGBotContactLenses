@@ -69,9 +69,6 @@ def main():
             bot.send_message(call.message.chat.id, 'Карнавальные линзы', reply_markup=buttons.carnaval_lenses_btns())
         elif call.data == 'solutions':
             bot.send_message(call.message.chat.id, 'Растворы и аксессуары', reply_markup=buttons.solutions_btns())
-        elif call.data == 'aero':
-
-
         elif call.data == 'condata':
             bot.send_message(call.message.chat.id, 'Группа ВК: vk.com/illusion_lens\n\n'
                                                    'Электронный адрес: info@illusion-lens.ru\n\n'
