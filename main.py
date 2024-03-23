@@ -53,8 +53,25 @@ def main():
         buttons = Bot_inline_btns()
         if call.data == 'transparent':
             bot.send_message(call.message.chat.id, 'Прозрачные линзы', reply_markup=buttons.transparent_btns())
-        elif call.data == '':
-            pass
+        elif call.data == 'blue':
+            bot.send_message(call.message.chat.id, 'Голубые линзы', reply_markup=buttons.blue_lenses_btns())
+        elif call.data == 'green':
+            bot.send_message(call.message.chat.id, 'Зеленые линзы', reply_markup=buttons.green_lenses_btns())
+        elif call.data == 'gray':
+            bot.send_message(call.message.chat.id, 'Серые линзы', reply_markup=buttons.gray_lenses_btns())
+        elif call.data == 'black':
+            bot.send_message(call.message.chat.id, 'Черные линзы', reply_markup=buttons.black_lenses_btns())
+        elif call.data == 'brown':
+            bot.send_message(call.message.chat.id, 'Карие линзы', reply_markup=buttons.brown_lenses_btns())
+        elif call.data == 'violet':
+            bot.send_message(call.message.chat.id, 'Фиолетовые линзы', reply_markup=buttons.violet_lenses_btns())
+        elif call.data == 'carnaval':
+            bot.send_message(call.message.chat.id, 'Карнавальные линзы', reply_markup=buttons.carnaval_lenses_btns())
+        elif call.data == 'solutions':
+            bot.send_message(call.message.chat.id, 'Растворы и аксессуары', reply_markup=buttons.solutions_btns())
+        elif call.data == 'aero':
+
+
         elif call.data == 'condata':
             bot.send_message(call.message.chat.id, 'Группа ВК: vk.com/illusion_lens\n\n'
                                                    'Электронный адрес: info@illusion-lens.ru\n\n'
