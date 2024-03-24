@@ -3,12 +3,18 @@
 #               zzsxd               #
 #####################################
 config_name = 'secrets.json'
+reminders = {} #словарь для хранения напоминаний для каждого пользователя
 #####################################
 import os
 import telebot
 import platform
+from datetime import datetime, timedelta
+import threading
+import time
 from config_parser import ConfigParser
 from frontend import Bot_inline_btns
+from backend import TempUserData
+
 
 
 def main():
@@ -22,9 +28,11 @@ def main():
             bot.send_message(message.chat.id, f'{message.from_user.first_name}, вы успешно вошли в Админ-Панель!', reply_markup=buttons.admin_btns())
     @bot.message_handler(content_types=['text'])
     def text_msg(message):
+        user_id = message.chat.id
         buttons = Bot_inline_btns()
-        if message.text == 'Все акции':
-            bot.send_message(message.chat.id, 'Что-то про акции')
+        code = temp_user_data.temp_data(user_id)[user_id][0]
+        if message.text == 'Акции':
+            bot.send_message(message.chat.id, 'Наши акции:', reply_markup=buttons.actions_btns())
         elif message.text == 'О компании':
             bot.send_message(message.chat.id, 'ILLUSION контактные линзы нового поколения!\n'
                                                     '\n'
@@ -43,10 +51,37 @@ def main():
                                               '\n'
                                               'Тестируй ILLUSION Aero Light бесплатно!', reply_markup=buttons.registration_btns())
         elif message.text == 'Напоминание':
-            bot.send_message(message.chat.id, 'Что-то про напоминание')
+            bot.send_message(message.chat.id, 'Вы можете поставить себе напоминание, чтобы не забыть купить новые линзы!\n\n'
+                                              'Введите дату, тогда бот пришлет вам напоминание!\n\n(Дата в формате: DD.MM.YYYY HH:MM (16.03.24 16:00)')
+            temp_user_data.temp_data(user_id)[user_id][0] = 0
+        elif code == 0:
+            if message.text and ' ' in message.text:
+                try:
+                    remind_time = datetime.strptime(message.text, '%d.%m.%Y %H:%M')
+                    if user_id not in reminders:
+                        reminders[user_id] = []
+                    reminders[user_id].append((message.text, remind_time))
+                    bot.reply_to(message, f"Напоминание на {remind_time.strftime('%d.%m.%Y %H:%M')} сохранено")
+                except ValueError:
+                    bot.reply_to(message, "Неверный формат. Используйте 'DD.MM.YYYY HH:MM'")
         elif message.text == 'Каталог':
             bot.send_message(message.chat.id, 'Каталог', reply_markup=buttons.catalog_btns())
 
+    def check_reminders():
+        while True:
+            current_time = datetime.now()
+            for chat_id, reminder_list in reminders.items():
+                new_list = []
+                for text, remind_time in reminder_list:
+                    if current_time >= remind_time:
+                        bot.send_message(chat_id, f"Напоминание: Купите линзы!")
+                    else:
+                        new_list.append((text, remind_time))
+                reminders[chat_id] = new_list
+            # Проверяем каждую минуту
+            time.sleep(60)
+    reminder_thread = threading.Thread(target=check_reminders)
+    reminder_thread.start()
 
     @bot.callback_query_handler(func=lambda call:True)
     def callback(call):
@@ -69,11 +104,29 @@ def main():
             bot.send_message(call.message.chat.id, 'Карнавальные линзы', reply_markup=buttons.carnaval_lenses_btns())
         elif call.data == 'solutions':
             bot.send_message(call.message.chat.id, 'Растворы и аксессуары', reply_markup=buttons.solutions_btns())
+        elif call.data == 'sets':
+            bot.send_message(call.message.chat.id, 'Наборы для линз', reply_markup=buttons.sets_btns())
+        elif call.data == 'water':
+            bot.send_message(call.message.chat.id, 'Растворы', reply_markup=buttons.water_btns())
+        elif call.data == 'drops':
+            bot.send_message(call.message.chat.id, 'Капли для глаз', reply_markup=buttons.drops_btns())
         elif call.data == 'condata':
             bot.send_message(call.message.chat.id, 'Группа ВК: vk.com/illusion_lens\n\n'
                                                    'Электронный адрес: info@illusion-lens.ru\n\n'
                                                    'Телефон для заказа через сайт или каталог товаров: 8 (812) 326 32 21 (Whatsapp, Telegram, Viber)\n\n'
                                                    'Время работы колл-центра: 9:30-18:00 Пн-Пт')
+        elif call.data == 'freelenses':
+            bot.send_message(call.message.chat.id, 'Получи бесплатную пару линз ILLUSION Aero Light.\n'
+                                              '\n'
+                                              'Регистрируйся на сайте, добавь тестовую пару линз в корзину, дождись доставку и наслаждайся идеальным зрением!\n'
+                                              '\n'
+                                              'Двухнедельные линзы ILLUSION Aero Light сделаны из инновационного материала — тонкие и упругие, они практически не чувствуются на глазах.\n'
+                                              '\n'
+                                              'ILLUSION Aero Light – это силикон-гидрогелевые линзы с высокой кислородопроницаемостью и повышенным влагосодержанием. Асферический дизайн линзы обеспечивает чёткое зрение даже при низкой освещенности.\n'
+                                              '\n'
+                                              'Тестируй ILLUSION Aero Light бесплатно!',
+                             reply_markup=buttons.registration_btns())
+
     bot.polling(none_stop=True)
 
 
@@ -81,5 +134,6 @@ if '__main__' == __name__:
     os_type = platform.system()
     work_dir = os.path.dirname(os.path.realpath(__file__))
     config = ConfigParser(f'{work_dir}/{config_name}', os_type)
+    temp_user_data = TempUserData()
     bot = telebot.TeleBot(config.get_config()['tg_api'])
     main()

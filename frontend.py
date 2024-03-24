@@ -15,7 +15,7 @@ class Bot_inline_btns:
 
     def start_btns(self):
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        stock = types.KeyboardButton('Все акции')
+        stock = types.KeyboardButton('Акции')
         company = types.KeyboardButton('О компании')
         free = types.KeyboardButton('Бесплатные линзы')
         notification = types.KeyboardButton('Напоминание')
@@ -39,6 +39,10 @@ class Bot_inline_btns:
         self.__markup.add(magasine, contact)
         return self.__markup
 
+    def actions_btns(self):
+        free = types.InlineKeyboardButton('Бесплатные линзы', callback_data='freelenses')
+        self.__markup.add(free)
+        return self.__markup
 
     def catalog_btns(self):
         transparent = types.InlineKeyboardButton('Прозрачные линзы', callback_data='transparent')
