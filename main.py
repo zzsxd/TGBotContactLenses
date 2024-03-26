@@ -3,19 +3,20 @@
 #               zzsxd               #
 #####################################
 config_name = 'secrets.json'
+xlsx_path = 'database.xlsx'
 reminders = {}  # словарь для хранения напоминаний для каждого пользователя
 #####################################
-import telebot
 import os
+import telebot
 import platform
+from datetime import datetime, timedelta
 import threading
-import time
-from datetime import datetime
 from threading import Lock
-from backend import TempUserData, DbAct
+import time
 from config_parser import ConfigParser
-from db import DB
 from frontend import Bot_inline_btns
+from backend import TempUserData, DbAct
+from db import DB
 
 
 def main():
@@ -103,6 +104,9 @@ def main():
         buttons = Bot_inline_btns()
         if call.data == 'transparent':
             bot.send_message(call.message.chat.id, 'Прозрачные линзы', reply_markup=buttons.transparent_btns())
+        elif call.data == 'export':
+            db_actions.db_export_xlsx()
+            bot.send_document(call.message.chat.id, open(xlsx_path, 'rb'))
         elif call.data == 'blue':
             bot.send_message(call.message.chat.id, 'Голубые линзы', reply_markup=buttons.blue_lenses_btns())
         elif call.data == 'green':
@@ -141,10 +145,6 @@ def main():
                                                    '\n'
                                                    'Тестируй ILLUSION Aero Light бесплатно!',
                              reply_markup=buttons.registration_btns())
-        elif call.data == 'export':
-            db_actions.db_export_xlsx()
-            bot.send_document(call.message.chat.id, open(xlsx_path), 'rb'))
-            os.remove(xlsx_path)
 
     bot.polling(none_stop=True)
 
@@ -157,5 +157,4 @@ if '__main__' == __name__:
     db = DB(config.get_config()['db_file_name'], Lock())
     db_actions = DbAct(db, config, xlsx_path)
     bot = telebot.TeleBot(config.get_config()['tg_api'])
-    admin_ids = config.get_config()['admins']
     main()

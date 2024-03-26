@@ -6,6 +6,7 @@ import os
 import time
 import pandas as pd
 import csv
+from openpyxl import load_workbook
 
 #####################################
 
@@ -62,7 +63,7 @@ class DbAct:
         if len(users) > 0:
             for user in users:
                 for info in range(len(list(user))):
-                    d[self.__fields[info]].addend(user[info])
+                    d[self.__fields[info]].append(user[info])
                 for i in range(3):
                     for j in range(3):
                         d[self.__fields[j]].append(None)
