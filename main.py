@@ -3,7 +3,7 @@
 #               zzsxd               #
 #####################################
 config_name = 'secrets.json'
-xlsx_path = 'database.xlsx'
+xlsx_path = 'dump.xlsx'
 reminders = {}  # словарь для хранения напоминаний для каждого пользователя
 #####################################
 import os
@@ -29,6 +29,9 @@ def main():
         db_actions.add_user(user_id, message.from_user.first_name, message.from_user.last_name,
                             f'@{message.from_user.username}')
         if command == 'start':
+            bot.send_message(message.chat.id, 'Привет! Я чат-бот для интернет-магазина Illusion Lens!\n'
+                                              'Вижу, ты тут впервые, тогда нажимай кнопку "Поделиться контактом" для '
+                                              'прохождения регистрации!', reply_markup=buttons.pre_start_btns())
             bot.send_message(message.chat.id, 'ILLUSION контактные линзы нового поколения!',
                              reply_markup=buttons.start_btns())
         elif db_actions.user_is_admin(user_id):
@@ -107,6 +110,7 @@ def main():
         elif call.data == 'export':
             db_actions.db_export_xlsx()
             bot.send_document(call.message.chat.id, open(xlsx_path, 'rb'))
+            os.remove(xlsx_path)
         elif call.data == 'blue':
             bot.send_message(call.message.chat.id, 'Голубые линзы', reply_markup=buttons.blue_lenses_btns())
         elif call.data == 'green':

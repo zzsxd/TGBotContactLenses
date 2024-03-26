@@ -13,6 +13,10 @@ class Bot_inline_btns:
         super(Bot_inline_btns, self).__init__()
         self.__markup = types.InlineKeyboardMarkup(row_width=1)
 
+    def pre_start_btns(self):
+        contact = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        contact = types.KeyboardButton('Поделиться контактом', request_contact=True)
+
     def start_btns(self):
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
         stock = types.KeyboardButton('Акции')
