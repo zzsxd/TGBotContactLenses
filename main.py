@@ -5,17 +5,17 @@
 config_name = 'secrets.json'
 reminders = {}  # словарь для хранения напоминаний для каждого пользователя
 #####################################
-import os
 import telebot
+import os
 import platform
-from datetime import datetime, timedelta
 import threading
-from threading import Lock
 import time
-from config_parser import ConfigParser
-from frontend import Bot_inline_btns
+from datetime import datetime
+from threading import Lock
 from backend import TempUserData, DbAct
+from config_parser import ConfigParser
 from db import DB
+from frontend import Bot_inline_btns
 
 
 def main():
@@ -155,6 +155,7 @@ if '__main__' == __name__:
     config = ConfigParser(f'{work_dir}/{config_name}', os_type)
     temp_user_data = TempUserData()
     db = DB(config.get_config()['db_file_name'], Lock())
-    db_actions = DbAct(db, config)
+    db_actions = DbAct(db, config, xlsx_path)
     bot = telebot.TeleBot(config.get_config()['tg_api'])
+    admin_ids = config.get_config()['admins']
     main()

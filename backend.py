@@ -21,7 +21,7 @@ class TempUserData:
 
 
 class DbAct:
-    def __init__(self, db, config):
+    def __init__(self, db, config, path_xlsx):
         super(DbAct, self).__init__()
         self.__db = db
         self.__config = config
