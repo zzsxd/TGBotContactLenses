@@ -29,10 +29,10 @@ def main():
         db_actions.add_user(user_id, message.from_user.first_name, message.from_user.last_name,
                             f'@{message.from_user.username}')
         if command == 'start':
-            bot.send_message(message.chat.id, f'Привет, {name_user}👋\n\n'
-                                              f'Я чат-бот для интернет-магазина «<b>Illusion Lens</b>» 👀\n\n'
-                                              'Вижу, ты тут впервые, тогда нажимай кнопку "Поделиться контактом👤" для '
-                                              'прохождения регистрации!', reply_markup=buttons.pre_start_btns(), parse_mode="HTML")
+            # bot.send_message(message.chat.id, f'Привет, {name_user}👋\n\n'
+            #                                   f'Я чат-бот для интернет-магазина «<b>Illusion Lens</b>» 👀\n\n'
+            #                                   'Вижу, ты тут впервые, тогда нажимай кнопку "Поделиться контактом👤" для '
+            #                                   'прохождения регистрации!', reply_markup=buttons.pre_start_btns(), parse_mode="HTML")
             bot.send_message(message.chat.id, '«<b>ILLUSION Lens</b>» - контактные линзы нового поколения!',
                              reply_markup=buttons.start_btns(), parse_mode="HTML")
         elif db_actions.user_is_admin(user_id):
@@ -72,24 +72,6 @@ def main():
                                                   'низкой освещенности.\n\n'
                                                   'Тестируй «ILLUSION Aero Light» бесплатно!',
                                  reply_markup=buttons.registration_btns())
-            elif message.text == 'Напоминание ⏰':
-                bot.send_message(message.chat.id,
-                                 'Вы можете поставить себе напоминание, чтобы не забыть купить новые линзы!\n\n'
-                                 'Введите дату, тогда бот пришлет вам напоминание!\n\n'
-                                 '<i>(Дата в формате: "<b>DD.MM.YYYY HH:MM (16.03.24 16:00)</b>"</i>', parse_mode="HTML")
-                temp_user_data.temp_data(user_id)[user_id][0] = 0
-            elif code == 0:
-                if message.text and ' ' in message.text:
-                    try:
-                        remind_time = datetime.strptime(message.text, '%d.%m.%Y %H:%M')
-                        if user_id not in reminders:
-                            reminders[user_id] = []
-                        reminders[user_id].append((message.text, remind_time))
-                        bot.reply_to(message, f"✅ Напоминание на <i>{remind_time.strftime('%d.%m.%Y %H:%M')}</i> "
-                                              f"сохранено ✅", parse_mode="HTML")
-                    except ValueError:
-                        bot.reply_to(message, "❌ <b>Неверный формат!</b> ❌\n"
-                                              "<i>Используйте '<b>DD.MM.YYYY HH:MM</b>'</i>", parse_mode="HTML")
             elif message.text == 'Каталог 🗂':
                 bot.send_message(message.chat.id, 'Каталог 🗂', reply_markup=buttons.catalog_btns())
         else:
