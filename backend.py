@@ -64,8 +64,5 @@ class DbAct:
             for user in users:
                 for info in range(len(list(user))):
                     d[self.__fields[info]].append(user[info])
-                for i in range(3):
-                    for j in range(3):
-                        d[self.__fields[j]].append(None)
             df = pd.DataFrame(d)
-            df.to_excel(self.__dump_path_xlsx, sheet_name='пользователи', index=False)
+            df.to_excel(self.__config.get_config()['xlsx_path'], sheet_name='пользователи', index=False)

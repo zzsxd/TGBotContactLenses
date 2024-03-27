@@ -29,6 +29,7 @@ def main():
         db_actions.add_user(user_id, message.from_user.first_name, message.from_user.last_name,
                             f'@{message.from_user.username}')
         if command == 'start':
+            # тут бот отправляет запрос на получение контактных данных (номер телефона)
             bot.send_message(message.chat.id, 'ILLUSION контактные линзы нового поколения!',
                              reply_markup=buttons.start_btns())
         elif db_actions.user_is_admin(user_id):
@@ -62,6 +63,8 @@ def main():
                                                   '\n'
                                                   'Тестируй ILLUSION Aero Light бесплатно!',
                                  reply_markup=buttons.registration_btns())
+            elif message.text == 'Каталог':
+                bot.send_message(message.chat.id, 'Каталог', reply_markup=buttons.catalog_btns())
             elif message.text == 'Напоминание':
                 bot.send_message(message.chat.id,
                                  'Вы можете поставить себе напоминание, чтобы не забыть купить новые линзы!\n\n'
@@ -77,8 +80,6 @@ def main():
                         bot.reply_to(message, f"Напоминание на {remind_time.strftime('%d.%m.%Y %H:%M')} сохранено")
                     except ValueError:
                         bot.reply_to(message, "Неверный формат. Используйте 'DD.MM.YYYY HH:MM'")
-            elif message.text == 'Каталог':
-                bot.send_message(message.chat.id, 'Каталог', reply_markup=buttons.catalog_btns())
         else:
             bot.send_message(message.chat.id, 'Введите /start для запуска бота')
 
