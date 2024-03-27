@@ -3,7 +3,6 @@
 #               zzsxd               #
 #####################################
 config_name = 'secrets.json'
-xlsx_path = 'dump.xlsx'
 reminders = {}  # словарь для хранения напоминаний для каждого пользователя
 #####################################
 import os
@@ -102,8 +101,8 @@ def main():
             bot.send_message(call.message.chat.id, 'Прозрачные линзы', reply_markup=buttons.transparent_btns())
         elif call.data == 'export':
             db_actions.db_export_xlsx()
-            bot.send_document(call.message.chat.id, open(xlsx_path, 'rb'))
-            os.remove(xlsx_path)
+            bot.send_document(call.message.chat.id, open(config.get_config()['xlsx_path'], 'rb'))
+            os.remove(config.get_config()['xlsx_path'])
         elif call.data == 'blue':
             bot.send_message(call.message.chat.id, 'Голубые линзы', reply_markup=buttons.blue_lenses_btns())
         elif call.data == 'green':
@@ -158,6 +157,6 @@ if '__main__' == __name__:
     config = ConfigParser(f'{work_dir}/{config_name}', os_type)
     temp_user_data = TempUserData()
     db = DB(config.get_config()['db_file_name'], Lock())
-    db_actions = DbAct(db, config, xlsx_path)
+    db_actions = DbAct(db, config, config.get_config()['xlsx_path'])
     bot = telebot.TeleBot(config.get_config()['tg_api'])
     main()
