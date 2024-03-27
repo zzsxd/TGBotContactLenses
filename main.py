@@ -18,6 +18,11 @@ from backend import TempUserData, DbAct
 from db import DB
 
 
+def start_msgas(user_id, buttons):
+    bot.send_message(user_id, '«<b>ILLUSION Lens</b>» - контактные линзы нового поколения!',
+                     reply_markup=buttons.start_btns(), parse_mode="HTML")
+
+
 def main():
     @bot.message_handler(commands=['start', 'admin'])
     def start_msg(message):
@@ -25,19 +30,33 @@ def main():
         user_id = message.from_user.id
         buttons = Bot_inline_btns()
         command = message.text.replace('/', '')
-        db_actions.add_user(user_id, message.from_user.first_name, message.from_user.last_name,
-                            f'@{message.from_user.username}')
         if command == 'start':
-            # bot.send_message(message.chat.id, f'Привет, {name_user}👋\n\n'
-            #                                   f'Я чат-бот для интернет-магазина «<b>Illusion Lens</b>» 👀\n\n'
-            #                                   'Вижу, ты тут впервые, тогда нажимай кнопку "Поделиться контактом👤" для '
-            #                                   'прохождения регистрации!', reply_markup=buttons.pre_start_btns(), parse_mode="HTML")
-            bot.send_message(message.chat.id, '«<b>ILLUSION Lens</b>» - контактные линзы нового поколения!',
-                             reply_markup=buttons.start_btns(), parse_mode="HTML")
+            if not db_actions.user_is_existed(user_id):
+                db_actions.add_user(user_id, message.from_user.first_name, message.from_user.last_name,
+                                    f'@{message.from_user.username}')
+                temp_user_data.temp_data(user_id)[user_id][0] = 0
+                bot.send_message(message.chat.id, f'Привет, {name_user}👋\n\n'
+                                                f'Я чат-бот для интернет-магазина «<b>Illusion Lens</b>» 👀\n\n'
+                                                'Вижу, ты тут впервые, тогда нажимай кнопку "Поделиться контактом👤" для '
+                                                'прохождения регистрации!', reply_markup=buttons.pre_start_btns(), parse_mode="HTML")
+            else:
+                start_msgas(user_id, buttons)
         elif db_actions.user_is_admin(user_id):
             if command == 'admin':
                 bot.send_message(message.chat.id, f'{message.from_user.first_name}, вы успешно вошли в Админ-Панель ✅',
                                  reply_markup=buttons.admin_btns())
+
+    @bot.message_handler(content_types=['contact'])
+    def text_msg(message):
+        user_id = message.chat.id
+        buttons = Bot_inline_btns()
+        code = temp_user_data.temp_data(user_id)[user_id][0]
+        if db_actions.user_is_existed(user_id):
+            match code:
+                case 0:
+                    temp_user_data.temp_data(user_id)[user_id][0] = None
+                    db_actions.add_phone(user_id, message.contact.phone_number)
+                    start_msgas(user_id, buttons)
 
     @bot.message_handler(content_types=['text'])
     def text_msg(message):
