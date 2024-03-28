@@ -8,7 +8,7 @@ reminders = {}  # словарь для хранения напоминаний 
 import os
 import telebot
 import platform
-from datetime import datetime, timedelta
+from datetime import datetime
 import threading
 from threading import Lock
 import time
@@ -92,6 +92,22 @@ def main():
                                  reply_markup=buttons.registration_btns())
             elif message.text == 'Каталог 🗂':
                 bot.send_message(message.chat.id, 'Каталог 🗂', reply_markup=buttons.catalog_btns())
+            elif message.text == 'Напоминание ⏰':
+                bot.send_message(message.chat.id,
+                                 'Вы можете поставить себе <b>напоминание</b>, чтобы не забыть купить новые линзы!\n\n'
+                                 'Введите дату, тогда бот пришлет вам напоминание!\n\n<i>(Дата в формате: DD.MM.YYYY HH:MM (<u>16.03.24 16:00</u>)</i>', parse_mode="HTML")
+                temp_user_data.temp_data(user_id)[user_id][0] = 1
+            elif code == 1:
+                if message.text and ' ' in message.text:
+                    try:
+                        remind_time = datetime.strptime(message.text, '%d.%m.%Y %H:%M')
+                        if user_id not in reminders:
+                            reminders[user_id] = []
+                        reminders[user_id].append((message.text, remind_time))
+                        bot.reply_to(message, f"Напоминание на <b>{remind_time.strftime('%d.%m.%Y %H:%M')}</b> сохранено ✅", parse_mode="HTML")
+                    except ValueError:
+                        bot.reply_to(message, "🚫Неверный формат 🚫\n\n"
+                                              "Используйте '<b>DD.MM.YYYY HH:MM</b>'", parse_mode="HTML")
         else:
             bot.send_message(message.chat.id, 'Введите /start для запуска бота')
 
@@ -102,7 +118,7 @@ def main():
                 new_list = []
                 for text, remind_time in reminder_list:
                     if current_time >= remind_time:
-                        bot.send_message(chat_id, f"⏰ Напоминание ⏰\n"
+                        bot.send_message(chat_id, f"⏰ Напоминание ⏰\n\n"
                                                   f"<b>Купите линзы!</b>", parse_mode="HTML")
                     else:
                         new_list.append((text, remind_time))
@@ -116,34 +132,10 @@ def main():
     @bot.callback_query_handler(func=lambda call: True)
     def callback(call):
         buttons = Bot_inline_btns()
-        if call.data == 'transparent':
-            bot.send_message(call.message.chat.id, 'Прозрачные линзы', reply_markup=buttons.transparent_btns())
-        elif call.data == 'export':
+        if call.data == 'export':
             db_actions.db_export_xlsx()
             bot.send_document(call.message.chat.id, open(config.get_config()['xlsx_path'], 'rb'))
             os.remove(config.get_config()['xlsx_path'])
-        elif call.data == 'blue':
-            bot.send_message(call.message.chat.id, 'Голубые линзы', reply_markup=buttons.blue_lenses_btns())
-        elif call.data == 'green':
-            bot.send_message(call.message.chat.id, 'Зеленые линзы', reply_markup=buttons.green_lenses_btns())
-        elif call.data == 'gray':
-            bot.send_message(call.message.chat.id, 'Серые линзы', reply_markup=buttons.gray_lenses_btns())
-        elif call.data == 'black':
-            bot.send_message(call.message.chat.id, 'Черные линзы', reply_markup=buttons.black_lenses_btns())
-        elif call.data == 'brown':
-            bot.send_message(call.message.chat.id, 'Карие линзы', reply_markup=buttons.brown_lenses_btns())
-        elif call.data == 'violet':
-            bot.send_message(call.message.chat.id, 'Фиолетовые линзы', reply_markup=buttons.violet_lenses_btns())
-        elif call.data == 'carnaval':
-            bot.send_message(call.message.chat.id, 'Карнавальные линзы', reply_markup=buttons.carnaval_lenses_btns())
-        elif call.data == 'solutions':
-            bot.send_message(call.message.chat.id, 'Растворы и аксессуары', reply_markup=buttons.solutions_btns())
-        elif call.data == 'sets':
-            bot.send_message(call.message.chat.id, 'Наборы для линз', reply_markup=buttons.sets_btns())
-        elif call.data == 'water':
-            bot.send_message(call.message.chat.id, 'Растворы', reply_markup=buttons.water_btns())
-        elif call.data == 'drops':
-            bot.send_message(call.message.chat.id, 'Капли для глаз', reply_markup=buttons.drops_btns())
         elif call.data == 'condata':
             bot.send_message(call.message.chat.id, 'Группа ВК: vk.com/illusion_lens\n\n'
                                                    'Электронный адрес: info@illusion-lens.ru\n\n'
