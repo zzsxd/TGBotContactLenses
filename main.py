@@ -67,7 +67,7 @@ def main():
             if message.text == 'Акции 💎':
                 bot.send_message(message.chat.id, 'Наши акции 💎', reply_markup=buttons.actions_btns())
             elif message.text == 'О компании ℹ️':
-                bot.send_video(message.chat.id, video='aboutcompany.mp4', reply_markup=buttons.about_btns())
+                bot.send_video(message.chat.id, open(video, 'rb'), width=1920, height=1080, reply_markup=buttons.about_btns())
             elif message.text == 'Бесплатные линзы 🎁':
                 bot.send_message(message.chat.id, 'Получи бесплатную пару линз «ILLUSION Aero Light»!\n\n'
                                                   'Регистрируйся на сайте, добавь тестовую пару линз в корзину, '
@@ -82,7 +82,7 @@ def main():
                                                   'Тестируй «ILLUSION Aero Light» бесплатно!',
                                  reply_markup=buttons.registration_btns())
             elif message.text == 'Каталог 🗂':
-                bot.send_message(message.chat.id, 'Каталог 🗂', reply_markup=buttons.catalog_btns())
+                bot.send_message(message.chat.id, 'Наш ассортимент товаров 🗂', reply_markup=buttons.catalog_btns())
             elif message.text == 'Напоминание ⏰':
                 bot.send_message(message.chat.id,
                                  'Вы можете поставить себе <b>напоминание</b>, чтобы не забыть купить новые линзы!\n\n'
@@ -160,5 +160,6 @@ if '__main__' == __name__:
     temp_user_data = TempUserData()
     db = DB(config.get_config()['db_file_name'], Lock())
     db_actions = DbAct(db, config, config.get_config()['xlsx_path'])
+    video = config.get_config()['video']
     bot = telebot.TeleBot(config.get_config()['tg_api'])
     main()
