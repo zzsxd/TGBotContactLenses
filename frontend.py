@@ -29,12 +29,12 @@ class Bot_inline_btns:
         return self.__markup
 
     def registration_btns(self):
-        reg = types.InlineKeyboardButton('Зарегестрироваться 👥', url='https://www.illusion-lens.ru/product/besplatnaya-para-linz-illusion-aero-light/')
+        reg = types.InlineKeyboardButton('Зарегестрироваться 👥', url='https://www.illusion-lens.ru/product/besplatnaya-para-linz-illusion-aero-light/?utm_source=tg&utm_medium=illusionbot')
         self.__markup.add(reg)
         return self.__markup
 
     def about_btns(self):
-        magasine = types.InlineKeyboardButton('Интернет-магазин', url='illusion-lens.ru')
+        magasine = types.InlineKeyboardButton('Интернет-магазин', url='https://www.illusion-lens.ru/?utm_source=tg&utm_medium=illusionbot')
         contact = types.InlineKeyboardButton('Контактные данные', callback_data='condata')
         self.__markup.add(magasine, contact)
         return self.__markup
@@ -51,20 +51,20 @@ class Bot_inline_btns:
         return self.__markup
 
     def transperent_btns(self):
-        aero = types.InlineKeyboardButton('Aero', url='https://www.illusion-lens.ru/aero/#')
-        clear = types.InlineKeyboardButton('Clear', url='https://www.illusion-lens.ru/clear/')
-        fashion = types.InlineKeyboardButton('Fashion', url='https://www.illusion-lens.ru/fashion/')
+        aero = types.InlineKeyboardButton('Aero', url='https://www.illusion-lens.ru/aero/?utm_source=tg&utm_medium=illusionbot')
+        clear = types.InlineKeyboardButton('Clear', url='https://www.illusion-lens.ru/clear/?utm_source=tg&utm_medium=illusionbot')
+        fashion = types.InlineKeyboardButton('Fashion', url='https://www.illusion-lens.ru/fashion/?utm_source=tg&utm_medium=illusionbot')
         self.__markup.add(aero, clear, fashion)
         return self.__markup
 
     def color_btns(self):
-        blue = types.InlineKeyboardButton('Голубые линзы', url='https://www.illusion-lens.ru/blue/')
-        green = types.InlineKeyboardButton('Зеленые линзы', url='https://www.illusion-lens.ru/green/')
-        gray = types.InlineKeyboardButton('Серые линзы', url='https://www.illusion-lens.ru/gray/')
-        black = types.InlineKeyboardButton('Черные линзы', url='https://www.illusion-lens.ru/black/')
-        brown = types.InlineKeyboardButton('Карие линзы', url='https://www.illusion-lens.ru/brown/')
-        violet = types.InlineKeyboardButton('Фиолетовые линзы', url='https://www.illusion-lens.ru/violet/')
-        carnaval = types.InlineKeyboardButton('Карнавальные линзы', url='https://www.illusion-lens.ru/carnival/')
+        blue = types.InlineKeyboardButton('Голубые линзы', url='https://www.illusion-lens.ru/blue/?utm_source=tg&utm_medium=illusionbot')
+        green = types.InlineKeyboardButton('Зеленые линзы', url='https://www.illusion-lens.ru/green/?utm_source=tg&utm_medium=illusionbot')
+        gray = types.InlineKeyboardButton('Серые линзы', url='https://www.illusion-lens.ru/gray/?utm_source=tg&utm_medium=illusionbot')
+        black = types.InlineKeyboardButton('Черные линзы', url='https://www.illusion-lens.ru/black/?utm_source=tg&utm_medium=illusionbot')
+        brown = types.InlineKeyboardButton('Карие линзы', url='https://www.illusion-lens.ru/brown/?utm_source=tg&utm_medium=illusionbot')
+        violet = types.InlineKeyboardButton('Фиолетовые линзы', url='https://www.illusion-lens.ru/violet/?utm_source=tg&utm_medium=illusionbot')
+        carnaval = types.InlineKeyboardButton('Карнавальные линзы', url='https://www.illusion-lens.ru/carnival/?utm_source=tg&utm_medium=illusionbot')
         self.__markup.add(blue, green, gray, black, brown, violet, carnaval)
         return self.__markup
 
