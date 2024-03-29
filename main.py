@@ -18,11 +18,6 @@ from backend import TempUserData, DbAct
 from db import DB
 
 
-def start_msgas(user_id, buttons):
-    bot.send_message(user_id, '«<b>ILLUSION Lens</b>» - контактные линзы нового поколения!',
-                     reply_markup=buttons.start_btns(), parse_mode="HTML")
-
-
 def main():
     @bot.message_handler(commands=['start', 'admin'])
     def start_msg(message):
@@ -30,33 +25,15 @@ def main():
         user_id = message.from_user.id
         buttons = Bot_inline_btns()
         command = message.text.replace('/', '')
+        db_actions.add_user(user_id, message.from_user.first_name, message.from_user.last_name,
+                            f'@{message.from_user.username}')
         if command == 'start':
-            if not db_actions.user_is_existed(user_id):
-                db_actions.add_user(user_id, message.from_user.first_name, message.from_user.last_name,
-                                    f'@{message.from_user.username}')
-                temp_user_data.temp_data(user_id)[user_id][0] = 0
-                bot.send_message(message.chat.id, f'Привет, {name_user}👋\n\n'
-                                                f'Я чат-бот для интернет-магазина «<b>Illusion Lens</b>» 👀\n\n'
-                                                'Вижу, ты тут впервые, тогда нажимай кнопку "Поделиться контактом👤" для '
-                                                'прохождения регистрации!', reply_markup=buttons.pre_start_btns(), parse_mode="HTML")
-            else:
-                start_msgas(user_id, buttons)
+            bot.send_message(message.chat.id, '«<b>ILLUSION Lens</b>» - контактные линзы нового поколения!',
+                             reply_markup=buttons.start_btns(), parse_mode="HTML")
         elif db_actions.user_is_admin(user_id):
             if command == 'admin':
                 bot.send_message(message.chat.id, f'{message.from_user.first_name}, вы успешно вошли в Админ-Панель ✅',
                                  reply_markup=buttons.admin_btns())
-
-    @bot.message_handler(content_types=['contact'])
-    def text_msg(message):
-        user_id = message.chat.id
-        buttons = Bot_inline_btns()
-        code = temp_user_data.temp_data(user_id)[user_id][0]
-        if db_actions.user_is_existed(user_id):
-            match code:
-                case 0:
-                    temp_user_data.temp_data(user_id)[user_id][0] = None
-                    db_actions.add_phone(user_id, message.contact.phone_number)
-                    start_msgas(user_id, buttons)
 
     @bot.message_handler(content_types=['text'])
     def text_msg(message):
@@ -87,8 +64,8 @@ def main():
                 bot.send_message(message.chat.id,
                                  'Вы можете поставить себе <b>напоминание</b>, чтобы не забыть купить новые линзы!\n\n'
                                  'Введите дату, тогда бот пришлет вам напоминание!\n\n<i>(Дата в формате: DD.MM.YYYY HH:MM (<u>16.03.24 16:00</u>)</i>', parse_mode="HTML")
-                temp_user_data.temp_data(user_id)[user_id][0] = 1
-            elif code == 1:
+                temp_user_data.temp_data(user_id)[user_id][0] = 0
+            elif code == 0:
                 if message.text and ' ' in message.text:
                     try:
                         remind_time = datetime.strptime(message.text, '%d.%m.%Y %H:%M')
@@ -129,6 +106,8 @@ def main():
             os.remove(config.get_config()['xlsx_path'])
         elif call.data == 'condata':
             bot.send_message(call.message.chat.id, 'Группа ВК: vk.com/illusion_lens\n\n'
+                                                   'YouTube: https://www.youtube.com/@illusionlens1530\n\n'
+                                                   'Pinterest: https://ru.pinterest.com/illusionlens/\n\n'
                                                    'Электронный адрес: info@illusion-lens.ru\n\n'
                                                    'Телефон для заказа через сайт или каталог товаров: 8 (812) 326 32 21 (Whatsapp, Telegram, Viber)\n\n'
                                                    'Время работы колл-центра: 9:30-18:00 Пн-Пт')
@@ -149,6 +128,10 @@ def main():
                                                    '\n'
                                                    'Тестируй "ILLUSION Aero Light" бесплатно!',
                              reply_markup=buttons.registration_btns())
+        elif call.data == 'transperent':
+            bot.send_message(call.message.chat.id, 'Прозрачные линзы 👀', reply_markup=buttons.transperent_btns())
+        elif call.data == 'color':
+            bot.send_message(call.message.chat.id, 'Цветные линзы 😎', reply_markup=buttons.color_btns())
 
     bot.polling(none_stop=True)
 

@@ -27,22 +27,18 @@ class DbAct:
         super(DbAct, self).__init__()
         self.__db = db
         self.__config = config
-        self.__fields = ['Имя', 'Фамилия', 'Никнейм', 'Номер телефона']
+        self.__fields = ['Имя', 'Фамилия', 'Никнейм']
         self.__dump_path_xlsx = path_xlsx
 
     def add_user(self, user_id, first_name, last_name, nick_name):
-        if user_id in self.__config.get_config()['admins']:
-            is_admin = True
-        else:
-            is_admin = False
-        self.__db.db_write(
-            'INSERT INTO users (user_id, first_name, last_name, nick_name, is_admin) VALUES (?, ?, ?, ?, ?)',
-            (user_id, first_name, last_name, nick_name, is_admin))
-
-    def add_phone(self, user_id, phone_number):
-        self.__db.db_write(
-            'UPDATE users SET phone_number = ? WHERE user_id = ?',
-            (phone_number, user_id))
+        if not self.user_is_existed(user_id):
+            if user_id in self.__config.get_config()['admins']:
+                is_admin = True
+            else:
+                is_admin = False
+            self.__db.db_write(
+                'INSERT INTO users (user_id, first_name, last_name, nick_name, is_admin) VALUES (?, ?, ?, ?, ?)',
+                (user_id, first_name, last_name, nick_name, is_admin))
 
     def user_is_existed(self, user_id):
         data = self.__db.db_read('SELECT count(*) FROM users WHERE user_id = ?', (user_id,))
@@ -63,8 +59,8 @@ class DbAct:
             return status
 
     def db_export_xlsx(self):
-        d = {'Имя': [], 'Фамилия': [], 'Никнейм': [], 'Номер телефона': []}
-        users = self.__db.db_read('SELECT first_name, last_name, nick_name, phone_number FROM users', ())
+        d = {'Имя': [], 'Фамилия': [], 'Никнейм': []}
+        users = self.__db.db_read('SELECT first_name, last_name, nick_name FROM users', ())
         if len(users) > 0:
             for user in users:
                 for info in range(len(list(user))):
