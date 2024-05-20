@@ -8,6 +8,7 @@ from telebot import types
 
 #####################################
 
+
 class Bot_inline_btns:
     def __init__(self):
         super(Bot_inline_btns, self).__init__()
@@ -48,26 +49,23 @@ class Bot_inline_btns:
         return self.__markup
 
     def catalog_btns(self):
-        transperent = types.InlineKeyboardButton('Прозрачные линзы', callback_data='transperent')
-        color = types.InlineKeyboardButton('Цветные линзы', callback_data='color')
+        color = types.InlineKeyboardButton('Цветные линзы', callback_data='switch1')
+        transperent = types.InlineKeyboardButton('Остальные линзы', callback_data='switch2')
         self.__markup.add(transperent, color)
         return self.__markup
 
-    def transperent_btns(self):
-        aero = types.InlineKeyboardButton('Aero', url='https://www.illusion-lens.ru/aero/?utm_source=tg&utm_medium=illusionbot')
-        clear = types.InlineKeyboardButton('Clear', url='https://www.illusion-lens.ru/clear/?utm_source=tg&utm_medium=illusionbot')
-        fashion = types.InlineKeyboardButton('Fashion', url='https://www.illusion-lens.ru/fashion/?utm_source=tg&utm_medium=illusionbot')
-        self.__markup.add(aero, clear, fashion)
-        return self.__markup
+    def color_btns(self, colors):
+        markup = types.InlineKeyboardMarkup(row_width=1)
+        for color in colors:
+            aero = types.InlineKeyboardButton(color[1], callback_data=f'color{color[0]}')
+            markup.add(aero)
+        return markup
 
-    def color_btns(self):
-        blue = types.InlineKeyboardButton('Голубые линзы', url='https://www.illusion-lens.ru/blue/?utm_source=tg&utm_medium=illusionbot')
-        green = types.InlineKeyboardButton('Зеленые линзы', url='https://www.illusion-lens.ru/green/?utm_source=tg&utm_medium=illusionbot')
-        gray = types.InlineKeyboardButton('Серые линзы', url='https://www.illusion-lens.ru/gray/?utm_source=tg&utm_medium=illusionbot')
-        black = types.InlineKeyboardButton('Черные линзы', url='https://www.illusion-lens.ru/black/?utm_source=tg&utm_medium=illusionbot')
-        brown = types.InlineKeyboardButton('Карие линзы', url='https://www.illusion-lens.ru/brown/?utm_source=tg&utm_medium=illusionbot')
-        violet = types.InlineKeyboardButton('Фиолетовые линзы', url='https://www.illusion-lens.ru/violet/?utm_source=tg&utm_medium=illusionbot')
-        carnaval = types.InlineKeyboardButton('Карнавальные линзы', url='https://www.illusion-lens.ru/carnival/?utm_source=tg&utm_medium=illusionbot')
-        self.__markup.add(blue, green, gray, black, brown, violet, carnaval)
-        return self.__markup
-
+    def switch_btns(self, link):
+        markup = types.InlineKeyboardMarkup(row_width=2)
+        btn1 = types.InlineKeyboardButton('<', callback_data=f'card_switch2')
+        btn2 = types.InlineKeyboardButton('>', callback_data=f'card_switch1')
+        btn3 = types.InlineKeyboardButton('WB', url=link)
+        btn4 = types.InlineKeyboardButton('Назад⤵️', callback_data='card_switch3')
+        markup.add(btn1, btn2, btn3, btn4)
+        return markup

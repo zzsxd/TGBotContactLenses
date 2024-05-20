@@ -18,7 +18,7 @@ class TempUserData:
 
     def temp_data(self, user_id):
         if user_id not in self.__user_data.keys():
-            self.__user_data.update({user_id: [None, None, None]})
+            self.__user_data.update({user_id: [None, None, None, [None, None, None, None], None, []]})
         return self.__user_data
 
 
@@ -57,6 +57,26 @@ class DbAct:
             else:
                 status = False
             return status
+
+    def get_all_products_ids_basic(self):
+        out = list()
+        data = self.__db.db_read('SELECT row_id FROM products WHERE basic = 1', ())
+        for i in data:
+            out.append(i[0])
+        return out
+
+    def get_all_products_ids_colors(self, color_id):
+        out = list()
+        data = self.__db.db_read('SELECT row_id FROM products WHERE basic = 0 AND color = ?', (color_id, ))
+        for i in data:
+            out.append(i[0])
+        return out
+
+    def get_all_colors(self):
+        return self.__db.db_read('SELECT row_id, title FROM colors', ())
+
+    def get_product_by_id(self, product_id):
+        return self.__db.db_read('SELECT photo, title, price, link FROM products WHERE row_id = ?', (product_id, ))[0]
 
     def db_export_xlsx(self):
         d = {'Имя': [], 'Фамилия': [], 'Никнейм': []}

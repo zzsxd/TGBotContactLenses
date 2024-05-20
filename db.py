@@ -23,13 +23,30 @@ class DB:
             self.__cursor = self.__db.cursor()
             self.__cursor.execute('''
             CREATE TABLE users(
-            row_id INTEGER primary key autoincrement not null,
-            user_id INTEGER,
-            first_name TEXT,
-            last_name TEXT,
-            nick_name TEXT,
-            is_admin BOOL,
-            UNIQUE(user_id)
+                row_id INTEGER primary key autoincrement not null,
+                user_id INTEGER,
+                first_name TEXT,
+                last_name TEXT,
+                nick_name TEXT,
+                is_admin BOOL,
+                UNIQUE(user_id)
+                )
+            ''')
+            self.__cursor.execute('''
+            CREATE TABLE products(
+                row_id INTEGER primary key autoincrement not null,
+                photo BLOB,
+                title TEXT,
+                price TEXT,
+                link TEXT,
+                basic BOOL,
+                color INTEGER
+                )
+            ''')
+            self.__cursor.execute('''
+            CREATE TABLE colors(
+                row_id INTEGER primary key autoincrement not null,
+                title TEXT
             )
             ''')
             self.__db.commit()
