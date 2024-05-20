@@ -20,7 +20,9 @@ class Bot_inline_btns:
         free = types.KeyboardButton('Бесплатные линзы 🎁')
         notification = types.KeyboardButton('Напоминание ⏰')
         catalog = types.KeyboardButton('Каталог 🗂')
-        keyboard.add(stock, company, free, notification, catalog)
+        delivery = types.KeyboardButton('Доставка 🚚')
+        lenses = types.KeyboardButton('Памятка 💌')
+        keyboard.add(stock, company, free, notification, catalog, delivery, lenses)
         return keyboard
 
     def admin_btns(self):
@@ -41,7 +43,8 @@ class Bot_inline_btns:
 
     def actions_btns(self):
         free = types.InlineKeyboardButton('Бесплатные линзы', callback_data='freelenses')
-        self.__markup.add(free)
+        promo = types.InlineKeyboardButton('Промокод на первый заказ', callback_data='promokod')
+        self.__markup.add(free, promo)
         return self.__markup
 
     def catalog_btns(self):
