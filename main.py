@@ -5,7 +5,7 @@
 import copy
 
 config_name = 'secrets.json'
-reminders = {}  # словарь для хранения напоминаний для каждого пользователя
+reminders = {}
 #####################################
 import os
 import telebot
@@ -27,7 +27,7 @@ def proccess_redirect(user_id):
         if product[0] is None:
             photo = open('freelenses.png', 'rb')
         else:
-            photo = product[0]
+            photo = open(product[0], 'rb')
         temp_user_data.temp_data(user_id)[user_id][5].append(bot.send_photo(chat_id=user_id, caption=f'Название: {product[1]}', photo=photo,
                        reply_markup=buttons.switch_btns(product[2:])).message_id)
     else:
@@ -207,7 +207,7 @@ def main():
             bot.send_message(call.message.chat.id, 'Получи промокод на первый заказ!\n'
                                                    '\n'
                                                    'Регистрируйся на сайте, добавь любой товар в корзину, '
-                                                   'примени промокод "промокод тут" и получи скидку на первый заказ!')
+                                                   'примени промокод "illusion2024" и получи скидку на первый заказ!')
         elif call.data[:5] == 'color':
             init_slider(user_id, False, call.data[5:])
         elif call.data[:11] == 'card_switch':

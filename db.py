@@ -40,7 +40,8 @@ class DB:
                 link TEXT,
                 ozon TEXT,
                 yamarket TEXT,
-                basic BOOL,
+                illusion TEXT,
+                basic INTEGER,
                 color INTEGER
                 )
             ''')
