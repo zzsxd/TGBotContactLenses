@@ -28,8 +28,8 @@ def proccess_redirect(user_id):
             photo = open('freelenses.png', 'rb')
         else:
             photo = product[0]
-        temp_user_data.temp_data(user_id)[user_id][5].append(bot.send_photo(chat_id=user_id, caption=f'Название: {product[1]}\n\nЦена: {product[2]}₽', photo=photo,
-                       reply_markup=buttons.switch_btns(product[3])).message_id)
+        temp_user_data.temp_data(user_id)[user_id][5].append(bot.send_photo(chat_id=user_id, caption=f'Название: {product[1]}', photo=photo,
+                       reply_markup=buttons.switch_btns(product[2:])).message_id)
     else:
         bot.send_message(user_id, 'В этой категории нет товаров')
 
@@ -227,6 +227,7 @@ def main():
                                                                                  reply_markup=buttons.catalog_btns()).message_id
 
         elif call.data[:6] == 'switch':
+            print('Воркает?')
             if call.data[6:] == '1':
                 colors = db_actions.get_all_colors()
                 temp_user_data.temp_data(user_id)[user_id][4] = bot.edit_message_text(chat_id=call.message.chat.id,

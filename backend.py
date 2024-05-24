@@ -76,7 +76,7 @@ class DbAct:
         return self.__db.db_read('SELECT row_id, title FROM colors', ())
 
     def get_product_by_id(self, product_id):
-        return self.__db.db_read('SELECT photo, title, price, link FROM products WHERE row_id = ?', (product_id, ))[0]
+        return self.__db.db_read('SELECT photo, title, link, ozon, yamarket FROM products WHERE row_id = ?', (product_id, ))[0]
 
     def db_export_xlsx(self):
         d = {'Имя': [], 'Фамилия': [], 'Никнейм': []}

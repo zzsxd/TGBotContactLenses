@@ -37,8 +37,9 @@ class DB:
                 row_id INTEGER primary key autoincrement not null,
                 photo BLOB,
                 title TEXT,
-                price TEXT,
                 link TEXT,
+                ozon TEXT,
+                yamarket TEXT,
                 basic BOOL,
                 color INTEGER
                 )

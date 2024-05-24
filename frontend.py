@@ -61,11 +61,15 @@ class Bot_inline_btns:
             markup.add(aero)
         return markup
 
-    def switch_btns(self, link):
+    def switch_btns(self, links):
+        company_names = {0: 'Wilberries', 1: 'Ozon', 2: 'Yandex Market'}
         markup = types.InlineKeyboardMarkup(row_width=2)
         btn1 = types.InlineKeyboardButton('<', callback_data=f'card_switch2')
         btn2 = types.InlineKeyboardButton('>', callback_data=f'card_switch1')
-        btn3 = types.InlineKeyboardButton('WB', url=link)
+        for index, link in enumerate(links):
+            if link is not None:
+                btn3 = types.InlineKeyboardButton(company_names[index], url=link)
+                markup.add(btn3)
         btn4 = types.InlineKeyboardButton('Назад⤵️', callback_data='card_switch3')
-        markup.add(btn1, btn2, btn3, btn4)
+        markup.add(btn1, btn2, btn4)
         return markup
