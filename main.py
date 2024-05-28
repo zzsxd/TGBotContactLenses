@@ -227,7 +227,6 @@ def main():
                                                                                  reply_markup=buttons.catalog_btns()).message_id
 
         elif call.data[:6] == 'switch':
-            print('Воркает?')
             if call.data[6:] == '1':
                 colors = db_actions.get_all_colors()
                 temp_user_data.temp_data(user_id)[user_id][4] = bot.edit_message_text(chat_id=call.message.chat.id,
