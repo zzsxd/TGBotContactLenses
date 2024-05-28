@@ -48,14 +48,15 @@ def show_product(user_id, direction):
     proccess_redirect(user_id)
 
 
-def init_slider(user_id, main_category, color=None):
+def init_slider(user_id, main_category, color=None, product_type=None):
     temp_user_data.temp_data(user_id)[user_id][3][0] = -1
     temp_user_data.temp_data(user_id)[user_id][3][1] = main_category
     if main_category:
-        temp_user_data.temp_data(user_id)[user_id][3][3] = db_actions.get_all_products_ids_basic()
+        temp_user_data.temp_data(user_id)[user_id][3][3] = db_actions.get_all_products_ids_basic(product_type)
     else:
         temp_user_data.temp_data(user_id)[user_id][3][2] = int(color)
         temp_user_data.temp_data(user_id)[user_id][3][3] = db_actions.get_all_products_ids_colors(color)
+    print(temp_user_data.temp_data(user_id)[user_id][3][3])
     show_product(user_id, '1')
 
 
@@ -209,7 +210,7 @@ def main():
                                                    'Регистрируйся на сайте, добавь любой товар в корзину, '
                                                    'примени промокод "illusion2024" и получи скидку на первый заказ!')
         elif call.data[:5] == 'color':
-            init_slider(user_id, False, call.data[5:])
+            init_slider(user_id, False, color=call.data[5:])
         elif call.data[:11] == 'card_switch':
             print(call.data[11:])
             if call.data[11:] != '3':
@@ -234,7 +235,7 @@ def main():
                                                                                       reply_markup=buttons.color_btns(colors),
                                                                                       message_id=temp_user_data.temp_data(user_id)[user_id][4]).message_id
             else:
-                init_slider(user_id, True)
+                init_slider(user_id, True, product_type=call.data[6:])
 
     bot.polling(none_stop=True)
 

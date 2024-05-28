@@ -63,7 +63,7 @@ class Bot_inline_btns:
         return markup
 
     def switch_btns(self, links):
-        company_names = {0: 'Wilberries', 1: 'Ozon', 2: 'Yandex Market'}
+        company_names = {0: 'Wilberries', 1: 'Ozon', 2: 'Yandex Market', 3: 'Illusion lens'}
         markup = types.InlineKeyboardMarkup(row_width=2)
         btn1 = types.InlineKeyboardButton('<', callback_data=f'card_switch2')
         btn2 = types.InlineKeyboardButton('>', callback_data=f'card_switch1')

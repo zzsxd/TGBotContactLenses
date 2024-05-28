@@ -58,9 +58,10 @@ class DbAct:
                 status = False
             return status
 
-    def get_all_products_ids_basic(self):
+    def get_all_products_ids_basic(self, type):
+        print(type)
         out = list()
-        data = self.__db.db_read('SELECT row_id FROM products WHERE basic = 1', ())
+        data = self.__db.db_read(f'SELECT row_id FROM products WHERE basic = "{int(type)-1}"', ())
         for i in data:
             out.append(i[0])
         return out
