@@ -50,7 +50,7 @@ class Bot_inline_btns:
 
     def catalog_btns(self):
         color = types.InlineKeyboardButton('Цветные линзы', callback_data='switch1')
-        transperent = types.InlineKeyboardButton('Остальные линзы', callback_data='switch2')
+        transperent = types.InlineKeyboardButton('Карнавальные линзы', callback_data='switch2')
         uncolor = types.InlineKeyboardButton('Прозрачные линзы', callback_data='switch3')
         self.__markup.add(transperent, color, uncolor)
         return self.__markup
