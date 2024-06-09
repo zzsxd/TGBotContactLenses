@@ -20,46 +20,6 @@ from backend import TempUserData, DbAct
 from db import DB
 
 
-def proccess_redirect(user_id):
-    buttons = Bot_inline_btns()
-    if len(temp_user_data.temp_data(user_id)[user_id][3][3]) > 0:
-        product = db_actions.get_product_by_id(temp_user_data.temp_data(user_id)[user_id][3][3][temp_user_data.temp_data(user_id)[user_id][3][0]])
-        if product[0] is None:
-            photo = open('freelenses.png', 'rb')
-        else:
-            photo = open(product[0], 'rb')
-        temp_user_data.temp_data(user_id)[user_id][5].append(bot.send_photo(chat_id=user_id, caption=f'Название: {product[1]}', photo=photo,
-                       reply_markup=buttons.switch_btns(product[2:])).message_id)
-    else:
-        bot.send_message(user_id, 'В этой категории нет товаров')
-
-
-def show_product(user_id, direction):
-    if direction == '1':
-        if temp_user_data.temp_data(user_id)[user_id][3][0] + 1 < len(temp_user_data.temp_data(user_id)[user_id][3][3]):
-            temp_user_data.temp_data(user_id)[user_id][3][0] += 1
-        else:
-            temp_user_data.temp_data(user_id)[user_id][3][0] = 0
-    else:
-        if temp_user_data.temp_data(user_id)[user_id][3][0] - 1 >= 0:
-            temp_user_data.temp_data(user_id)[user_id][3][0] -= 1
-        else:
-            temp_user_data.temp_data(user_id)[user_id][3][0] = len(temp_user_data.temp_data(user_id)[user_id][3][3])-1
-    proccess_redirect(user_id)
-
-
-def init_slider(user_id, main_category, color=None, product_type=None):
-    temp_user_data.temp_data(user_id)[user_id][3][0] = -1
-    temp_user_data.temp_data(user_id)[user_id][3][1] = main_category
-    if main_category:
-        temp_user_data.temp_data(user_id)[user_id][3][3] = db_actions.get_all_products_ids_basic(product_type)
-    else:
-        temp_user_data.temp_data(user_id)[user_id][3][2] = int(color)
-        temp_user_data.temp_data(user_id)[user_id][3][3] = db_actions.get_all_products_ids_colors(color)
-    print(temp_user_data.temp_data(user_id)[user_id][3][3])
-    show_product(user_id, '1')
-
-
 def main():
     @bot.message_handler(commands=['start', 'admin'])
     def start_msg(message):
@@ -131,7 +91,7 @@ def main():
                                                      'Тестируй «ILLUSION Aero Light» бесплатно!',
                                reply_markup=buttons.registration_btns())
             elif message.text == 'Каталог 🗂':
-                temp_user_data.temp_data(user_id)[user_id][4] = bot.send_message(message.chat.id, 'Наш ассортимент товаров 🗂', reply_markup=buttons.catalog_btns()).message_id
+                bot.send_message(message.chat.id, 'Наш ассортимент товаров 🗂', reply_markup=buttons.catalog_btns()).message_id
             elif message.text == 'Напоминание ⏰':
                 bot.send_message(message.chat.id,
                                  'Вы можете поставить себе <b>напоминание</b>, чтобы не забыть купить новые линзы!\n\n'
@@ -209,33 +169,39 @@ def main():
                                                    '\n'
                                                    'Регистрируйся на сайте, добавь любой товар в корзину, '
                                                    'примени промокод "illusion2024" и получи скидку на первый заказ!')
-        elif call.data[:5] == 'color':
-            init_slider(user_id, False, color=call.data[5:])
-        elif call.data[:11] == 'card_switch':
-            print(call.data[11:])
-            if call.data[11:] != '3':
-                show_product(user_id, call.data[11:])
-            else:
-                try:
-                    bot.delete_message(user_id, temp_user_data.temp_data(user_id)[user_id][4])
-                    for i in temp_user_data.temp_data(user_id)[user_id][5]:
-                        bot.delete_message(user_id, i)
-                except:
-                    pass
-                temp_user_data.temp_data(user_id)[user_id][5] = copy.deepcopy([])
-                temp_user_data.temp_data(user_id)[user_id][4] = bot.send_message(user_id,
-                                                                                 'Наш ассортимент товаров 🗂',
-                                                                                 reply_markup=buttons.catalog_btns()).message_id
+        elif call.data[:8] == 'lifetime':
+            data_category = db_actions.get_categories_by_id(call.data[8:], temp_user_data.temp_data(user_id)[user_id][1])
+            data_product = db_actions.get_products_by_lifetime(call.data[8:], temp_user_data.temp_data(user_id)[user_id][1])
+            bot.send_photo(photo=open(data_category[0], 'rb'), caption=data_category[1], reply_markup=buttons.products_btns(data_product))
+
+        elif call.data[:4] == 'color':
+            data_category = db_actions.get_categories_by_id(call.data[8:], temp_user_data.temp_data(user_id)[user_id][1])
+            data_product = db_actions.get_products_by_color(call.data[8:], temp_user_data.temp_data(user_id)[user_id][1])
+            bot.send_photo(photo=open(data_category[0], 'rb'), caption=data_category[1],
+                           reply_markup=buttons.products_btns(data_product))
 
         elif call.data[:6] == 'switch':
-            if call.data[6:] == '1':
-                colors = db_actions.get_all_colors()
-                temp_user_data.temp_data(user_id)[user_id][4] = bot.edit_message_text(chat_id=call.message.chat.id,
-                                                                                      text='Выберите цвет',
-                                                                                      reply_markup=buttons.color_btns(colors),
-                                                                                      message_id=temp_user_data.temp_data(user_id)[user_id][4]).message_id
-            else:
-                init_slider(user_id, True, product_type=call.data[6:])
+            temp_user_data.temp_data(user_id)[user_id][1] = call.data[6:]
+            match call.data[6:]:
+                case "1":
+                    colors = db_actions.get_colors()
+                    bot.send_message(user_id, 'Выберите цвет', reply_markup=buttons.colors_btns(colors))
+                case "2":
+                    data_category = db_actions.carnaval_by_title(temp_user_data.temp_data(user_id)[user_id][1])
+                    data_product = db_actions.get_products_by_type(temp_user_data.temp_data(user_id)[user_id][1])
+                    bot.send_photo(photo=open(data_category[0], 'rb'), caption=data_category[1],
+                                   reply_markup=buttons.products_btns(data_product))
+                case "3":
+                    bot.send_message(user_id, 'Выберите срок службы линз', reply_markup=buttons.lifetime_btns())
+
+        elif call.data[:7] == 'product':
+            product = db_actions.get_product_by_id(call.data[7:])
+            temp_user_data.temp_data(user_id)[user_id][2].append(bot.send_photo(photo=product[0], caption=product[1], reply_markup=buttons.buy_links_btns(product[2:])).message_id)
+
+        elif call.data[:7] == 'product_back':
+            for i in temp_user_data.temp_data(user_id)[user_id][2]:
+                bot.delete_message(user_id, i)
+            temp_user_data.temp_data(user_id)[user_id][2] = copy.deepcopy([])
 
     bot.polling(none_stop=True)
 

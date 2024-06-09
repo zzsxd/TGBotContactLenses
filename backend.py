@@ -18,7 +18,7 @@ class TempUserData:
 
     def temp_data(self, user_id):
         if user_id not in self.__user_data.keys():
-            self.__user_data.update({user_id: [None, None, None, [None, None, None, None], None, []]})
+            self.__user_data.update({user_id: [None, None, []]})
         return self.__user_data
 
 
@@ -58,26 +58,28 @@ class DbAct:
                 status = False
             return status
 
-    def get_all_products_ids_basic(self, type):
-        print(type)
-        out = list()
-        data = self.__db.db_read(f'SELECT row_id FROM products WHERE basic = "{int(type)-1}"', ())
-        for i in data:
-            out.append(i[0])
-        return out
+    def get_categories_by_id(self, row_id, title):
+        return self.__db.db_read('SELECT `photo`, `desc` FROM `categories` WHERE `row_id` = ? AND `type` = ?', (row_id, title))[0]
 
-    def get_all_products_ids_colors(self, color_id):
-        out = list()
-        data = self.__db.db_read('SELECT row_id FROM products WHERE basic = 0 AND color = ?', (color_id, ))
-        for i in data:
-            out.append(i[0])
-        return out
+    def get_product_by_id(self, row_id):
+        return self.__db.db_read('SELECT `photo`, `title`, `link`, `ozon`, `yamarket`, `illusion` FROM `products` WHERE `row_id` = ?', (row_id, ))[0]
 
-    def get_all_colors(self):
-        return self.__db.db_read('SELECT row_id, title FROM colors', ())
+    def carnaval_by_title(self, title):
+        return self.__db.db_read('SELECT `photo`, `desc` FROM `categories` WHERE `type` = ?',
+                                 (title, ))[0]
 
-    def get_product_by_id(self, product_id):
-        return self.__db.db_read('SELECT photo, title, link, ozon, yamarket, illusion FROM products WHERE row_id = ?', (product_id, ))[0]
+    def get_products_by_lifetime(self, lifetime, type):
+        return self.__db.db_read('SELECT `row_id`, `title` FROM `products` WHERE `lifetime` = ? AND `type` = ?', (lifetime, type))
+
+    def get_products_by_color(self, color, type):
+        return self.__db.db_read('SELECT `row_id`, `title` FROM `products` WHERE `color` = ? AND `type` = ?', (color, type))
+
+    def get_products_by_type(self, type):
+        return self.__db.db_read('SELECT `row_id`, `title` FROM `products` WHERE `type` = ?',
+                                 (type, ))
+
+    def get_colors(self):
+        return self.__db.db_read('SELECT `row_id`, `title` FROM `colors`', ())
 
     def db_export_xlsx(self):
         d = {'Имя': [], 'Фамилия': [], 'Никнейм': []}
