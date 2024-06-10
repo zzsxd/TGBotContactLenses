@@ -31,6 +31,40 @@ class Bot_inline_btns:
         self.__markup.add(one)
         return self.__markup
 
+    def lifetime_btns(self):
+        color = types.InlineKeyboardButton('2-x недельные', callback_data='lifetime1')
+        transperent = types.InlineKeyboardButton('На месяц', callback_data='lifetime2')
+        uncolor = types.InlineKeyboardButton('На 3 месяца', callback_data='lifetime3')
+        self.__markup.add(transperent, color, uncolor)
+        return self.__markup
+
+    def products_btns(self, data):
+        markup = types.InlineKeyboardMarkup(row_width=1)
+        for i in data:
+            aero = types.InlineKeyboardButton(i[1], callback_data=f'product{i[0]}')
+            markup.add(aero)
+        btn3 = types.InlineKeyboardButton('назад', callback_data='product_back1')
+        markup.add(btn3)
+        return markup
+
+    def buy_links_btns(self, links):
+        company_names = {0: 'Wilberries', 1: 'Ozon', 2: 'Yandex Market', 3: 'Illusion lens'}
+        markup = types.InlineKeyboardMarkup(row_width=1)
+        for index, link in enumerate(links):
+            if link is not None:
+                btn3 = types.InlineKeyboardButton(company_names[index], url=link)
+                markup.add(btn3)
+        btn3 = types.InlineKeyboardButton('назад', callback_data='product_back2')
+        markup.add(btn3)
+        return markup
+
+    def colors_btns(self, data):
+        markup = types.InlineKeyboardMarkup(row_width=1)
+        for i in data:
+            aero = types.InlineKeyboardButton(i[1], callback_data=f'color{i[0]}')
+            markup.add(aero)
+        return markup
+
     def registration_btns(self):
         reg = types.InlineKeyboardButton('Зарегестрироваться 👥', url='https://www.illusion-lens.ru/product/besplatnaya-para-linz-illusion-aero-light/?utm_source=tg&utm_medium=illusionbot')
         self.__markup.add(reg)
@@ -54,23 +88,3 @@ class Bot_inline_btns:
         uncolor = types.InlineKeyboardButton('Прозрачные линзы', callback_data='switch3')
         self.__markup.add(transperent, color, uncolor)
         return self.__markup
-
-    def color_btns(self, colors):
-        markup = types.InlineKeyboardMarkup(row_width=1)
-        for color in colors:
-            aero = types.InlineKeyboardButton(color[1], callback_data=f'color{color[0]}')
-            markup.add(aero)
-        return markup
-
-    def switch_btns(self, links):
-        company_names = {0: 'Wilberries', 1: 'Ozon', 2: 'Yandex Market', 3: 'Illusion lens'}
-        markup = types.InlineKeyboardMarkup(row_width=2)
-        btn1 = types.InlineKeyboardButton('<', callback_data=f'card_switch2')
-        btn2 = types.InlineKeyboardButton('>', callback_data=f'card_switch1')
-        for index, link in enumerate(links):
-            if link is not None:
-                btn3 = types.InlineKeyboardButton(company_names[index], url=link)
-                markup.add(btn3)
-        btn4 = types.InlineKeyboardButton('Назад⤵️', callback_data='card_switch3')
-        markup.add(btn1, btn2, btn4)
-        return markup
