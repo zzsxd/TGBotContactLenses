@@ -170,15 +170,16 @@ def main():
                                                    'Регистрируйся на сайте, добавь любой товар в корзину, '
                                                    'примени промокод "illusion2024" и получи скидку на первый заказ!')
         elif call.data[:8] == 'lifetime':
+            print(call.data[8:], temp_user_data.temp_data(user_id)[user_id][1])
             data_category = db_actions.get_categories_by_id(call.data[8:], temp_user_data.temp_data(user_id)[user_id][1])
             data_product = db_actions.get_products_by_lifetime(call.data[8:], temp_user_data.temp_data(user_id)[user_id][1])
-            bot.send_photo(photo=open(data_category[0], 'rb'), caption=data_category[1], reply_markup=buttons.products_btns(data_product))
+            temp_user_data.temp_data(user_id)[user_id][2].append(bot.send_photo(chat_id=user_id, photo=open(data_category[0], 'rb'), caption=data_category[1], reply_markup=buttons.products_btns(data_product)).message_id)
 
-        elif call.data[:4] == 'color':
-            data_category = db_actions.get_categories_by_id(call.data[8:], temp_user_data.temp_data(user_id)[user_id][1])
-            data_product = db_actions.get_products_by_color(call.data[8:], temp_user_data.temp_data(user_id)[user_id][1])
-            bot.send_photo(photo=open(data_category[0], 'rb'), caption=data_category[1],
-                           reply_markup=buttons.products_btns(data_product))
+        elif call.data[:5] == 'color':
+            data_category = db_actions.get_categories_by_id(call.data[5:], temp_user_data.temp_data(user_id)[user_id][1])
+            data_product = db_actions.get_products_by_color(call.data[5:], temp_user_data.temp_data(user_id)[user_id][1])
+            temp_user_data.temp_data(user_id)[user_id][2].append(bot.send_photo(chat_id=user_id, photo=open(data_category[0], 'rb'), caption=data_category[1],
+                           reply_markup=buttons.products_btns(data_product)).message_id)
 
         elif call.data[:6] == 'switch':
             temp_user_data.temp_data(user_id)[user_id][1] = call.data[6:]
@@ -189,19 +190,17 @@ def main():
                 case "2":
                     data_category = db_actions.carnaval_by_title(temp_user_data.temp_data(user_id)[user_id][1])
                     data_product = db_actions.get_products_by_type(temp_user_data.temp_data(user_id)[user_id][1])
-                    bot.send_photo(photo=open(data_category[0], 'rb'), caption=data_category[1],
-                                   reply_markup=buttons.products_btns(data_product))
+                    temp_user_data.temp_data(user_id)[user_id][2].append(bot.send_photo(chat_id=user_id, photo=open(data_category[0], 'rb'), caption=data_category[1],
+                                   reply_markup=buttons.products_btns(data_product)).message_id)
                 case "3":
                     bot.send_message(user_id, 'Выберите срок службы линз', reply_markup=buttons.lifetime_btns())
-
+        elif call.data[:12] == 'product_back':
+            for i in temp_user_data.temp_data(user_id)[user_id][int(call.data[12:])+1]:
+                bot.delete_message(user_id, i)
+            temp_user_data.temp_data(user_id)[user_id][int(call.data[12:])+1] = copy.deepcopy([])
         elif call.data[:7] == 'product':
             product = db_actions.get_product_by_id(call.data[7:])
-            temp_user_data.temp_data(user_id)[user_id][2].append(bot.send_photo(photo=product[0], caption=product[1], reply_markup=buttons.buy_links_btns(product[2:])).message_id)
-
-        elif call.data[:7] == 'product_back':
-            for i in temp_user_data.temp_data(user_id)[user_id][2]:
-                bot.delete_message(user_id, i)
-            temp_user_data.temp_data(user_id)[user_id][2] = copy.deepcopy([])
+            temp_user_data.temp_data(user_id)[user_id][3].append(bot.send_photo(chat_id=user_id, photo=open(product[0], 'rb'), caption=product[1], reply_markup=buttons.buy_links_btns(product[2:])).message_id)
 
     bot.polling(none_stop=True)
 

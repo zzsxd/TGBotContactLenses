@@ -43,6 +43,8 @@ class Bot_inline_btns:
         for i in data:
             aero = types.InlineKeyboardButton(i[1], callback_data=f'product{i[0]}')
             markup.add(aero)
+        btn3 = types.InlineKeyboardButton('назад', callback_data='product_back1')
+        markup.add(btn3)
         return markup
 
     def buy_links_btns(self, links):
@@ -52,7 +54,7 @@ class Bot_inline_btns:
             if link is not None:
                 btn3 = types.InlineKeyboardButton(company_names[index], url=link)
                 markup.add(btn3)
-        btn3 = types.InlineKeyboardButton('назад', callback_data='product_back')
+        btn3 = types.InlineKeyboardButton('назад', callback_data='product_back2')
         markup.add(btn3)
         return markup
 
@@ -60,13 +62,6 @@ class Bot_inline_btns:
         markup = types.InlineKeyboardMarkup(row_width=1)
         for i in data:
             aero = types.InlineKeyboardButton(i[1], callback_data=f'color{i[0]}')
-            markup.add(aero)
-        return markup
-
-    def catetgory_btns(self, data):
-        markup = types.InlineKeyboardMarkup(row_width=1)
-        for color in data:
-            aero = types.InlineKeyboardButton(color[1], callback_data=f'linse{color[0]}')
             markup.add(aero)
         return markup
 
