@@ -66,7 +66,7 @@ class Bot_inline_btns:
         return markup
 
     def registration_btns(self):
-        reg = types.InlineKeyboardButton('Зарегестрироваться 👥', url='https://www.illusion-lens.ru/product/besplatnaya-para-linz-illusion-aero-light/?utm_source=tg&utm_medium=illusionbot')
+        reg = types.InlineKeyboardButton('Зарегистрироваться 👥', url='https://www.illusion-lens.ru/product/besplatnaya-para-linz-illusion-aero-light/?utm_source=tg&utm_medium=illusionbot')
         self.__markup.add(reg)
         return self.__markup
 
@@ -86,5 +86,5 @@ class Bot_inline_btns:
         color = types.InlineKeyboardButton('Цветные линзы', callback_data='switch1')
         transperent = types.InlineKeyboardButton('Карнавальные линзы', callback_data='switch2')
         uncolor = types.InlineKeyboardButton('Прозрачные линзы', callback_data='switch3')
-        self.__markup.add(transperent, color, uncolor)
+        self.__markup.add(uncolor, color, transperent)
         return self.__markup

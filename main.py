@@ -190,7 +190,9 @@ def main():
                     temp_user_data.temp_data(user_id)[user_id][2].append(bot.send_photo(chat_id=user_id, photo=open(data_category[0], 'rb'), caption=data_category[1],
                                    reply_markup=buttons.products_btns(data_product)).message_id)
                 case "3":
-                    bot.send_message(user_id, 'Выберите срок службы линз', reply_markup=buttons.lifetime_btns())
+                    img = open('uncolor.jpg', 'rb')
+                    bot.send_photo(user_id, photo=img, caption='У нас очень много прозрачных линз!\n\nВыберите срок '
+                                                               'службы!', reply_markup=buttons.lifetime_btns())
         elif call.data[:12] == 'product_back':
             for i in temp_user_data.temp_data(user_id)[user_id][int(call.data[12:])+1]:
                 bot.delete_message(user_id, i)
